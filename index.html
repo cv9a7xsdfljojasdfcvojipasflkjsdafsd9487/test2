@@ -245,30 +245,37 @@
             { url: 'codes/NIPA.json', site: 'NIPA', isArticle: false, displayName: 'NIPA' }
         ];
 
-        // 2. 데이터 로딩 함수 (수정 제안)
+        // -----------------------------------------------------
+        // 2. 데이터 로딩 함수
+        // -----------------------------------------------------
         function loadData() {
-            // ... (기존 즐겨찾기 로드 로직 유지) ...
+            // 로컬 스토리지에서 즐겨찾기 로드
             const favArticles = localStorage.getItem('favoriteArticles');
             const favPublications = localStorage.getItem('favoritePublications');
             if (favArticles) favoriteArticles = new Set(JSON.parse(favArticles));
             if (favPublications) favoritePublications = new Set(JSON.parse(favPublications));
 
-            // **캐시 우회를 위한 타임스탬프 생성**
-            const cacheBuster = `?t=${Date.now()}`;
-    
             const promises = FILES_TO_LOAD.map(file => {
-                // **요청 URL에 캐시 우회 문자열 추가**
-                const urlWithCacheBuster = file.url + cacheBuster; 
-
-                return fetch(urlWithCacheBuster) // **수정된 URL 사용**
+                return fetch(file.url)
                     .then(response => {
                         if (!response.ok) {
                             throw new Error(`Failed to load ${file.url}: ${response.statusText}`);
-                        }    
-                        // ... (이후 로직 유지) ...
+                        }
                         return response.json();
                     })
-                    // ... (이후 로직 유지) ...
+                    .then(data => {
+                        // 각 데이터 항목에 site, isArticle, link 필드 추가
+                        return data.map(item => ({
+                            ...item,
+                            site: file.site,
+                            isArticle: file.isArticle,
+                            displayName: file.displayName,
+                            // 기사명/제목, 링크 통일
+                            title: item.기사명 || item.제목 || '제목 없음',
+                            link: item.링크 || item.link || '#',
+                            category: item.분류 || item.category || '',
+                        }));
+                    })
                     .catch(error => {
                         console.error(`Error loading ${file.url}:`, error);
                         return []; // 오류 발생 시 빈 배열 반환
