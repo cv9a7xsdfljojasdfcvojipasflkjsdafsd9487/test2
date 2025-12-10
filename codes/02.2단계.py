@@ -1,15 +1,9 @@
 
-# 현재 스크립트가 위치한 디렉토리의 상위 디렉토리(저장소 루트) 경로 설정
-current_dir = os.path.dirname(os.path.abspath(__file__)) 
-parent_dir = os.path.join(current_dir, '..') 
-
-
 # =============================================================
 # 셀 4: NIA 웹 크롤링 및 데이터 수집 로직
 # =============================================================
 
 # NIA 메인 페이지 요청
-# ... (중략: 데이터 수집 로직은 그대로 유지) ...
 response = requests.get("https://nia.or.kr/site/nia_kor/main.do;jsessionid=6EACE24EADAB8A749EFCC1293267C284.33f82d3a14ca06361270")
 html = response.text
 soup = BeautifulSoup(html, 'html.parser')
@@ -64,15 +58,14 @@ df3 = pd.DataFrame(data, columns=['제목', '분류', '링크', '년', '월', '�
 # 셀 6: JSON 파일 이어 붙이기 및 저장 로직 (경로 수정됨)
 # =============================================================
 
-# 💡 상위 디렉토리 경로와 파일명을 결합하여 최종 경로 생성
-full_path = os.path.join(parent_dir, 'nia.json') 
+# 💡 현재 스크립트와 동일한 디렉토리(code 폴더)에 저장됩니다.
+full_path = 'nia.json' 
 new_data = df3.to_dict('records')
 
 existing_data = []
 
 # 1. 기존 JSON 파일 로드
 if os.path.exists(full_path):
-    # ... (기존 파일 로드 로직 유지) ...
     try:
         with open(full_path, 'r', encoding='utf-8') as f:
             content = f.read()
