@@ -1,6 +1,3 @@
-pandas
 requests
-Beautifulsoup4
-numpy
-os
-re
+pandas
+beautifulsoup4
