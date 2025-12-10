@@ -72,7 +72,7 @@ df3 = pd.DataFrame(data, columns=['제목', '분류', '링크', '년', '월', '�
 # 셀 6: JSON 파일 이어 붙이기 및 저장 로직
 # =============================================================
 
-full_path = 'NIA.json' # 경로를 NIA.json으로 변경 (원래 코드가 실행된 후 변경된 이름)
+full_path = 'nia.json' # 경로를 nia.json으로 변경 (원래 코드가 실행된 후 변경된 이름)
 new_data = df3.to_dict('records')
 
 existing_data = []
