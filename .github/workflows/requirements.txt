@@ -1,1 +1,8 @@
-
+# requirements.txt 예시
+pandas
+requests
+Beautifulsoup4
+numpy
+json
+os
+re
