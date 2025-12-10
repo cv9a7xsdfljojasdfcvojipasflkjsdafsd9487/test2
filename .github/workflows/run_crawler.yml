@@ -52,3 +52,7 @@ jobs:
           file_pattern: 'nia.json' # 👈 스크립트가 생성한 파일
           commit_message: 'Automated: Update NIA Web Crawler data'
           branch: main # 👈 사용하는 브랜치 이름에 맞게 수정하세요
+          push_options: '--force' # 푸시 오류를 덜 발생시키기 위해 추가
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
