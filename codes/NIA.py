@@ -64,7 +64,7 @@ df3 = pd.DataFrame(data, columns=['제목', '분류', '링크', '년', '월', '�
 # =============================================================
 
 # 💡 현재 스크립트와 동일한 디렉토리(code 폴더)에 저장됩니다.
-full_path = 'nia.json' 
+full_path = 'codes/nia.json' 
 new_data = df3.to_dict('records')
 
 existing_data = []
