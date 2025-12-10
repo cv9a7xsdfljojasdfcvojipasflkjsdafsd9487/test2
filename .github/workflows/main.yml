@@ -1,42 +1,50 @@
-name: Jupyter Notebook Runner
+name: Run Python Crawler and Update JSON # 워크플로우 이름
 
 on:
   push:
-    branches: [ main, master ]
-  workflow_dispatch:
+    branches: [ main, master ] # main/master 브랜치에 푸시될 때 자동 실행
+  workflow_dispatch: # GitHub 웹사이트에서 수동 실행 가능
 
 jobs:
-  run-notebook:
+  run-and-commit:
     runs-on: ubuntu-latest
 
     steps:
+      # 1. 저장소 코드 체크아웃
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          # 자동 커밋을 위해 전체 히스토리를 가져옵니다.
+          fetch-depth: 0 
 
+      # 2. Python 환경 설정
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
       
-      # 💡 1. 의존성 설치 (papermill 포함)
-      - name: Install dependencies (including Papermill)
+      # 3. 의존성 설치 (필수 라이브러리 설치)
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt # papermill 및 필요한 라이브러리 설치
+          # requirements.txt 파일이 있다면 설치합니다.
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          # requirements.txt에 누락되었을 경우를 대비해 핵심 라이브러리를 명시적으로 설치
+          pip install pandas requests beautifulsoup4
 
-      # 💡 2. Jupyter Notebook 실행 (핵심)
-      - name: Execute Jupyter Notebook
+      # 4. 파이썬 스크립트 실행 (핵심)
+      - name: Execute Crawler Script
         run: |
-          # ----------------------------------------------------------------------
-          # papermill을 사용하여 code 폴더 내의 노트북 파일을 실행합니다.
-          #
-          # 사용법: papermill <입력 노트북 경로> <출력 노트북 경로>
-          # ----------------------------------------------------------------------
-          papermill code/analysis.ipynb code/analysis_output.ipynb
+          # code 폴더 내의 스크립트 파일을 실행합니다.
+          # 실제 파일 이름을 'your_script_name.py' 대신 사용해주세요.
+          python codse/02.2단계.py
           
-      # 3. (선택 사항) 실행된 노트북 결과 파일을 다시 커밋
-      - name: Commit executed notebook
+      # 5. 변경된 JSON 파일 자동 커밋 및 푸시 (핵심)
+      - name: Commit and Push new JSON data
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: 'Feat: Automated execution of analysis notebook'
-          files: 'code/analysis_output.ipynb' # 실행 결과 파일을 커밋
+          # 스크립트가 생성/업데이트하는 JSON 파일 경로를 지정합니다.
+          # 스크립트가 실행되는 위치(루트)에 NIA.json이 생성됩니다.
+          files: nia.json 
+          commit_message: "Automated Data Update: nia.json [Skip CI]"
+          # 이 커밋으로 인해 워크플로우가 다시 실행되지 않도록 [Skip CI] 추가
