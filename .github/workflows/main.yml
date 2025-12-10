@@ -3,7 +3,7 @@ name: Run Python Script and Commit
 # 💡 실행 주기 설정: 매일 UTC 10:00 (한국 시간 19:00)
 on:
   # schedule:
-    # - cron: '0 10 * * *'
+    # - cron: '0 06 * * *'
   # 💡 수동 실행을 위한 설정 (Actions 탭에서 Run workflow 버튼으로 실행 가능)
   workflow_dispatch:
 
