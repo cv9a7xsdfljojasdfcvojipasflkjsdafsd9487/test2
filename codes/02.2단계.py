@@ -1,24 +1,3 @@
-import requests
-from bs4 import BeautifulSoup
-import re
-import pandas as pd
-import os
-import json
-
-# =============================================================
-# 셀 1, 2: 패키지 설치 (설치 코드는 .py 파일에서는 주석 처리 또는 제거)
-# 실행 전 환경에 pandas, requests, openpyxl, beautifulsoup4, regex 등이 설치되어 있어야 합니다.
-# =============================================================
-
-# =============================================================
-# 셀 3: requests 테스트 (주석 처리)
-# 해당 셀은 코드 실행에 필수적이지 않으므로 주석 처리된 상태를 유지하거나 제거합니다.
-# '''
-# response = requests.get("https://search.etnews.com/etnews/search.html?kwd=%EC%9D%B8%EA%B3%B5%EC%A7%80%EB%8A%A5&date=0&startDate=&endDate=&detailSearch=true&category=CATEGORY1&pageSize=&search_source=&sort=1&preKwd%5B0%5D=AI")
-# response.status_code
-# '''
-# =============================================================
-
 
 # =============================================================
 # 셀 4: NIA 웹 크롤링 및 데이터 수집 로직
