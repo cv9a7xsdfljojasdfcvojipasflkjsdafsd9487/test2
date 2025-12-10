@@ -1,4 +1,9 @@
-
+import requests
+from bs4 import BeautifulSoup
+import pandas as pd
+import os
+import json
+import re
 # =============================================================
 # 셀 4: NIA 웹 크롤링 및 데이터 수집 로직
 # =============================================================
