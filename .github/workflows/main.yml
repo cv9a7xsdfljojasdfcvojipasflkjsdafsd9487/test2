@@ -10,6 +10,8 @@ on:
 
 jobs:
   run-script:
+    # 💡 수정: GitHub 제공 러너(ubuntu-latest) 대신 Self-hosted Runner 사용
+    #runs-on: self-hosted
     runs-on: ubuntu-latest
     
     steps:
@@ -20,6 +22,7 @@ jobs:
         run: |
           echo "Scheduled run detected. Waiting 5 minutes (300 seconds) for time alignment."
           sleep 300s
+          
         
       # 1. 저장소 체크아웃 (코드 가져오기)
       - name: Checkout code
