@@ -36,6 +36,11 @@ jobs:
       # 스크립트를 실행할 때 해당 경로를 지정해야 합니다.
       - name: Run NIA.py script
         run: python codes/NIA.py
+      - name: List files in codes directory
+        run: |
+          echo "--- Files in codes/ after running script ---"
+          ls -l codes/
+          echo "---------------------------------------------"
         
       # 5. 변경된 파일 커밋 및 푸시
       # 💡 NIA.py가 생성/수정한 nia.json 파일을 커밋합니다.
