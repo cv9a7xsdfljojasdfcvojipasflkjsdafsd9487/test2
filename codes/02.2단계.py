@@ -1,10 +1,3 @@
-# 필요한 라이브러리 import
-import requests
-from bs4 import BeautifulSoup
-import re
-import pandas as pd
-import os # os 모듈은 경로 처리를 위해 필수
-import json
 
 # 현재 스크립트가 위치한 디렉토리의 상위 디렉토리(저장소 루트) 경로 설정
 current_dir = os.path.dirname(os.path.abspath(__file__)) 
