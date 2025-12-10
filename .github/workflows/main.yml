@@ -35,7 +35,7 @@ jobs:
       # 💡 주의: NIA.py는 codes 디렉토리 안에 있으므로,
       # 스크립트를 실행할 때 해당 경로를 지정해야 합니다.
       - name: Run NIA.py script
-        run: python codes/NIA.py
+        run: python codes/pycode/NIA.py
       - name: List files in codes directory
         run: |
           echo "--- Files in codes/ after running script ---"
