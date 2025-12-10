@@ -14,8 +14,12 @@ jobs:
     
     steps:
       # 0. 딜레이 완화를 위한 대기 (5분 대기 후 목표 시간인 06:05 KST에 가깝게 실행)
+      # 조건: 워크플로우가 'schedule' 이벤트로 실행되었을 때만 이 단계를 실행합니다.
       - name: Wait for 5 minutes to align with target time (06:05 KST)
-        run: sleep 300s # 300초 = 5분 대기
+        if: github.event_name == 'schedule'
+        run: |
+          echo "Scheduled run detected. Waiting 5 minutes (300 seconds) for time alignment."
+          sleep 300s
         
       # 1. 저장소 체크아웃 (코드 가져오기)
       - name: Checkout code
@@ -37,8 +41,6 @@ jobs:
           pip install -r requirements.txt
           
       # 4. Python 스크립트 실행
-      # 💡 주의: NIA.py는 codes 디렉토리 안에 있으므로,
-      # 스크립트를 실행할 때 해당 경로를 지정해야 합니다.
       - name: Run NIA.py script
         run: python codes/pycode/NIA.py
       - name: List files in codes directory
@@ -48,11 +50,9 @@ jobs:
           echo "---------------------------------------------"
           
       # 5. 변경된 파일 커밋 및 푸시
-      # 💡 NIA.py가 생성/수정한 nia.json 파일을 커밋합니다.
       - name: Commit and Push changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          # 커밋할 파일 목록 (nia.json은 codes/NIA.py와 같은 디렉토리(codes)에 생성됩니다.)
           file_pattern: 'codes/nia.json'
           commit_message: 'Automated NIA data update [skip ci]'
           branch: main # 또는 master (사용하는 브랜치 이름으로 변경)
