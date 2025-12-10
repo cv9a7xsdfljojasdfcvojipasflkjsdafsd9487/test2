@@ -33,6 +33,9 @@ jobs:
         run: |
           # code 폴더 안에 있는 파이썬 파일을 실행하도록 경로 수정
           python codes/02.2단계.ipynb
+          # python codes/preprocess.py
+          # python codes/model_training.py
+          # python codes/reporting.py
           
       # 5. 실행 결과 확인 (선택 사항)
       # 스크립트 실행 결과로 생성된 파일 등을 확인하거나 다음 단계로 넘길 수 있습니다.
