@@ -1,48 +1,42 @@
-name: Python Code Runner # 워크플로우의 이름
+name: Jupyter Notebook Runner
 
 on:
   push:
-    branches: [ main, master ] # main 또는 master 브랜치에 푸시될 때 워크플로우 실행
-  pull_request:
-    branches: [ main, master ] # main 또는 master 브랜치로 풀 리퀘스트가 들어올 때 실행
-
-  # 💡 수동 실행을 위한 이벤트 추가 (필수)
+    branches: [ main, master ]
   workflow_dispatch:
-    # 수동 실행 시 사용자에게 입력받을 인수가 있다면 여기에 정의합니다.
-    # 현재는 인수가 필요 없으므로 비워둡니다.
 
 jobs:
-  run-python-script: # 실행할 작업(Job)의 ID
-    runs-on: ubuntu-latest # 작업을 실행할 환경 지정 (가장 최신 버전의 Ubuntu 리눅스 환경 사용)
+  run-notebook:
+    runs-on: ubuntu-latest
 
     steps:
-      # 1. 저장소 코드 체크아웃
       - name: Checkout code
         uses: actions/checkout@v4
-        # 저장소의 코드를 Runner 환경(Ubuntu)으로 가져옵니다.
 
-      # 2. Python 환경 설정
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10' # 사용할 파이썬 버전 지정 (원하는 버전으로 변경 가능)
+          python-version: '3.10'
       
-      # 3. 의존성 패키지 설치 (선택 사항)
-      # 프로젝트에 필요한 패키지(예: requirements.txt)가 있다면 이 단계를 사용합니다.
-      - name: Install dependencies
+      # 💡 1. 의존성 설치 (papermill 포함)
+      - name: Install dependencies (including Papermill)
         run: |
           python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    # 4. 파이썬 스크립트 실행 (핵심)
-      - name: Run main Python script
+          pip install -r requirements.txt # papermill 및 필요한 라이브러리 설치
+
+      # 💡 2. Jupyter Notebook 실행 (핵심)
+      - name: Execute Jupyter Notebook
         run: |
-          # code 폴더 안에 있는 파이썬 파일을 실행하도록 경로 수정
-          python codes/02.2단계.ipynb
-          # python codes/preprocess.py
-          # python codes/model_training.py
-          # python codes/reporting.py
+          # ----------------------------------------------------------------------
+          # papermill을 사용하여 code 폴더 내의 노트북 파일을 실행합니다.
+          #
+          # 사용법: papermill <입력 노트북 경로> <출력 노트북 경로>
+          # ----------------------------------------------------------------------
+          papermill code/analysis.ipynb code/analysis_output.ipynb
           
-      # 5. 실행 결과 확인 (선택 사항)
-      # 스크립트 실행 결과로 생성된 파일 등을 확인하거나 다음 단계로 넘길 수 있습니다.
-      - name: Check execution status
-        run: echo "Python script completed successfully."
+      # 3. (선택 사항) 실행된 노트북 결과 파일을 다시 커밋
+      - name: Commit executed notebook
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'Feat: Automated execution of analysis notebook'
+          files: 'code/analysis_output.ipynb' # 실행 결과 파일을 커밋
