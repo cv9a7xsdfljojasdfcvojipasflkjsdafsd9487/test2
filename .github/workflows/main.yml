@@ -6,6 +6,11 @@ on:
   pull_request:
     branches: [ main, master ] # main 또는 master 브랜치로 풀 리퀘스트가 들어올 때 실행
 
+  # 💡 수동 실행을 위한 이벤트 추가 (필수)
+  workflow_dispatch:
+    # 수동 실행 시 사용자에게 입력받을 인수가 있다면 여기에 정의합니다.
+    # 현재는 인수가 필요 없으므로 비워둡니다.
+
 jobs:
   run-python-script: # 실행할 작업(Job)의 ID
     runs-on: ubuntu-latest # 작업을 실행할 환경 지정 (가장 최신 버전의 Ubuntu 리눅스 환경 사용)
