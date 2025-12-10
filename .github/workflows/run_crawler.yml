@@ -1,34 +1,35 @@
 name: Run NIA Crawler and Commit Result
 
+# 💡 1. 레포지토리 콘텐츠에 쓰기 권한을 부여합니다. (자동 커밋/푸시를 위해 필수)
+permissions:
+  contents: write
+
 on:
-  # 1. 주기적 실행 설정 (Periodic Execution)
-  #    - 매일 UTC 기준 23:00에 실행됩니다. (한국 시간 기준 오전 8시)
+  # 2. 주기적 실행 설정 (매일 UTC 23:00, 한국 시간 오전 8시)
   schedule:
     - cron: '0 23 * * *' 
     
-  # 2. 수동 실행 설정 (Manual Execution)
-  #    - GitHub Actions 탭에서 'Run workflow' 버튼으로 직접 실행할 수 있습니다.
+  # 3. 수동 실행 설정 (Actions 탭에서 버튼으로 실행 가능)
   workflow_dispatch:
 
 # 💡 환경 변수
 env:
-  PYTHON_VERSION: '3.11'
+  PYTHON_VERSION: '3.11' # 👈 pandas 버전 충돌 해결을 위해 3.11로 설정
 
 jobs:
   run_python_script:
     runs-on: ubuntu-latest
     
     steps:
-      # 1. 레포지토리 체크아웃 및 권한 설정
+      # 1. 레포지토리 체크아웃 (코드와 기존 JSON 파일을 가져옵니다)
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          # 변경 사항(nia.json)을 커밋하기 위해 필요합니다.
           token: ${{ secrets.GITHUB_TOKEN }}
           persist-credentials: false
-          fetch-depth: 0 
+          fetch-depth: 0 # 모든 기록을 가져와야 JSON 파일 업데이트가 원활합니다.
 
-      # 2. Python 환경 설정
+      # 2. Python 환경 설정 (3.11)
       - name: Set up Python ${{ env.PYTHON_VERSION }}
         uses: actions/setup-python@v5
         with:
@@ -38,17 +39,18 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
+          # requirements.txt에 requests, pandas, beautifulsoup4 만 있어야 합니다.
           pip install -r requirements.txt
           
       # 4. Python 스크립트 실행 (codes/02.2단계.py)
       - name: Run Python script
-        # 스크립트가 'nia.json'을 현재 디렉토리(루트)에 저장합니다.
+        # 💡 스크립트에는 모든 import 구문(requests, bs4, pandas, os, json, re)이 포함되어야 합니다.
         run: python codes/02.2단계.py
 
       # 5. 변경된 파일 (nia.json) 자동 커밋 및 푸시
       - name: Commit and Push changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          file_pattern: 'nia.json'
+          file_pattern: 'nia.json' # 👈 스크립트가 생성한 파일
           commit_message: 'Automated: Update NIA Web Crawler data'
-          branch: main # 💡 사용하시는 메인 브랜치 이름에 맞게 수정하세요 (예: master 또는 main)
+          branch: main # 👈 사용하는 브랜치 이름에 맞게 수정하세요
