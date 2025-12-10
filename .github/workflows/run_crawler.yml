@@ -1,6 +1,4 @@
 name: Run NIA Crawler and Commit Result
-
-# 💡 1. 레포지토리 콘텐츠에 쓰기 권한을 부여합니다. (자동 커밋/푸시를 위해 필수)
 permissions:
   contents: write
 
