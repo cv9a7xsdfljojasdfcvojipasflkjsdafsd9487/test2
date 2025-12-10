@@ -254,9 +254,15 @@
             const favPublications = localStorage.getItem('favoritePublications');
             if (favArticles) favoriteArticles = new Set(JSON.parse(favArticles));
             if (favPublications) favoritePublications = new Set(JSON.parse(favPublications));
-
+        
+            // 캐시 버스팅을 위한 현재 시간 (밀리초) - 매번 고유한 값 생성
+            const cacheBuster = Date.now();
+        
             const promises = FILES_TO_LOAD.map(file => {
-                return fetch(file.url)
+                // URL에 고유한 쿼리 파라미터 추가
+                const urlWithCacheBuster = `${file.url}?_=${cacheBuster}`;
+        
+                return fetch(urlWithCacheBuster) // 수정된 URL 사용
                     .then(response => {
                         if (!response.ok) {
                             throw new Error(`Failed to load ${file.url}: ${response.statusText}`);
@@ -281,7 +287,7 @@
                         return []; // 오류 발생 시 빈 배열 반환
                     });
             });
-
+        
             Promise.all(promises)
                 .then(results => {
                     results.forEach(siteData => {
@@ -293,10 +299,10 @@
                             }
                         }
                     });
-
+        
                     allDataLoaded = true;
                     console.log(`총 ${articleData.length}개의 기사 데이터와 ${publicationData.length}개의 간행물 데이터 로드 완료.`);
-                    
+        
                     // 초기 탭 렌더링 (HOME)
                     showTab('HOME');
                 })
